@@ -1,5 +1,6 @@
 """FastAPI application with all API routes."""
 import json
+import os
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -19,7 +20,7 @@ with open(DATA_PATH) as f:
     MAPPINGS = json.load(f)
 
 # Database & SRS
-DB_PATH = Path(__file__).parent.parent / "db" / "progress.db"
+DB_PATH = Path(os.getenv("DB_PATH", str(Path(__file__).parent.parent / "db" / "progress.db")))
 DB_PATH.parent.mkdir(exist_ok=True)
 db = Database(str(DB_PATH))
 db.init()

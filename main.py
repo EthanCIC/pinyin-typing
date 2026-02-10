@@ -1,18 +1,12 @@
-import webbrowser
-import threading
-import time
+import os
 
 import uvicorn
 
 
-def open_browser():
-    time.sleep(1.5)
-    webbrowser.open("http://localhost:8000")
-
-
 def main():
-    threading.Thread(target=open_browser, daemon=True).start()
-    uvicorn.run("app.api:app", host="127.0.0.1", port=8000, reload=True)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run("app.api:app", host=host, port=port)
 
 
 if __name__ == "__main__":

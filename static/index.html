@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拼音學習系統</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav id="nav">
+        <div class="nav-brand">拼音學習系統</div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-view="phase1">Phase 1 聲韻母</button>
+            <button class="nav-tab" data-view="phase2">Phase 2 特殊規則</button>
+            <button class="nav-tab" data-view="phase3">Phase 3 單字</button>
+            <button class="nav-tab" data-view="phase4">Phase 4 詞組</button>
+            <button class="nav-tab" data-view="phase5">Phase 5 速度</button>
+            <button class="nav-tab" data-view="dashboard">統計</button>
+        </div>
+    </nav>
+
+    <main id="app">
+        <!-- Phase 1: Initials & Finals -->
+        <div id="view-phase1" class="view active">
+            <div class="phase-header">
+                <h2>Phase 1：聲母 & 韻母對照</h2>
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="typing">打字模式</button>
+                    <button class="mode-btn" data-mode="recognition">選擇模式</button>
+                </div>
+            </div>
+            <div class="group-selector" id="group-selector">
+                <button class="group-btn active" data-group="all_initials">全部聲母</button>
+                <button class="group-btn" data-group="all_finals">全部韻母</button>
+                <button class="group-btn" data-group="labial">唇音 ㄅㄆㄇㄈ</button>
+                <button class="group-btn" data-group="alveolar">舌尖 ㄉㄊㄋㄌ</button>
+                <button class="group-btn" data-group="velar">舌根 ㄍㄎㄏ</button>
+                <button class="group-btn" data-group="palatal">舌面 ㄐㄑㄒ</button>
+                <button class="group-btn" data-group="retroflex">翹舌 ㄓㄔㄕㄖ</button>
+                <button class="group-btn" data-group="sibilant">平舌 ㄗㄘㄙ</button>
+                <button class="group-btn" data-group="simple">單韻母</button>
+                <button class="group-btn" data-group="compound">複韻母</button>
+                <button class="group-btn" data-group="nasal">鼻韻母</button>
+                <button class="group-btn" data-group="medial">介母 ㄧㄨㄩ</button>
+            </div>
+
+            <!-- Practice area -->
+            <div id="practice-area" class="practice-area">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                    <span class="progress-text" id="progress-text">0 / 0</span>
+                </div>
+                <div class="card" id="card">
+                    <div class="card-zhuyin" id="card-zhuyin">ㄅ</div>
+                    <div class="card-hint" id="card-hint"></div>
+                </div>
+
+                <!-- Typing mode input -->
+                <div id="typing-input-area" class="input-area">
+                    <input type="text" id="pinyin-input" class="pinyin-input" placeholder="輸入拼音..." autocomplete="off" autofocus>
+                    <div class="feedback" id="feedback"></div>
+                </div>
+
+                <!-- Recognition mode options -->
+                <div id="recognition-area" class="input-area" style="display:none">
+                    <div class="options" id="options"></div>
+                    <div class="feedback" id="recognition-feedback"></div>
+                </div>
+
+                <div class="session-stats" id="session-stats">
+                    <span id="stat-correct">✓ 0</span>
+                    <span id="stat-wrong">✗ 0</span>
+                    <span id="stat-time">⏱ 0s</span>
+                </div>
+            </div>
+
+            <!-- Session summary (hidden initially) -->
+            <div id="session-summary" class="session-summary" style="display:none">
+                <h3>練習完成！</h3>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <div class="summary-number" id="summary-total">0</div>
+                        <div class="summary-label">總題數</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-number correct" id="summary-correct">0</div>
+                        <div class="summary-label">正確</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-number wrong" id="summary-wrong">0</div>
+                        <div class="summary-label">錯誤</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-number" id="summary-accuracy">0%</div>
+                        <div class="summary-label">正確率</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-number" id="summary-time">0s</div>
+                        <div class="summary-label">用時</div>
+                    </div>
+                </div>
+                <div class="summary-mistakes" id="summary-mistakes"></div>
+                <button class="btn-primary" id="btn-restart">再練一次</button>
+            </div>
+        </div>
+
+        <!-- Phase 2: Special Rules -->
+        <div id="view-phase2" class="view">
+            <div class="phase-header">
+                <h2>Phase 2：特殊規則</h2>
+            </div>
+            <div class="group-selector">
+                <button class="group-btn active" data-rule="u-rule">ü 規則</button>
+                <button class="group-btn" data-rule="whole-syllable">整體認讀</button>
+                <button class="group-btn" data-rule="tone-placement">聲調標記</button>
+                <button class="group-btn" data-rule="confusion">易混淆組</button>
+            </div>
+            <div id="rule-content" class="rule-content"></div>
+            <div id="rule-quiz" class="practice-area" style="display:none">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="rule-progress-bar"></div>
+                    <span class="progress-text" id="rule-progress-text">0 / 0</span>
+                </div>
+                <div class="card" id="rule-card">
+                    <div class="card-question" id="rule-question"></div>
+                </div>
+                <div class="input-area">
+                    <div class="options" id="rule-options"></div>
+                    <div class="feedback" id="rule-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 3: Character Practice -->
+        <div id="view-phase3" class="view">
+            <div class="phase-header">
+                <h2>Phase 3：單字拼音練習</h2>
+                <p class="phase-desc">看中文字，打出拼音（不含聲調）</p>
+            </div>
+            <div id="char-practice" class="practice-area">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="char-progress-bar"></div>
+                    <span class="progress-text" id="char-progress-text">0 / 0</span>
+                </div>
+                <div class="card" id="char-card">
+                    <div class="card-character" id="card-character">字</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="char-input" class="pinyin-input" placeholder="輸入拼音..." autocomplete="off">
+                    <div class="feedback" id="char-feedback"></div>
+                </div>
+                <div class="session-stats" id="char-stats">
+                    <span id="char-stat-correct">✓ 0</span>
+                    <span id="char-stat-wrong">✗ 0</span>
+                    <span id="char-stat-time">⏱ 0s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 4: Word Practice -->
+        <div id="view-phase4" class="view">
+            <div class="phase-header">
+                <h2>Phase 4：詞組拼音練習</h2>
+                <p class="phase-desc">看詞組，打出完整拼音（空格分隔，不含聲調）</p>
+            </div>
+            <div id="word-practice" class="practice-area">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="word-progress-bar"></div>
+                    <span class="progress-text" id="word-progress-text">0 / 0</span>
+                </div>
+                <div class="card" id="word-card">
+                    <div class="card-word" id="card-word">你好</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="word-input" class="pinyin-input" placeholder="輸入拼音（空格分隔）..." autocomplete="off">
+                    <div class="feedback" id="word-feedback"></div>
+                </div>
+                <div class="session-stats" id="word-stats">
+                    <span id="word-stat-correct">✓ 0</span>
+                    <span id="word-stat-wrong">✗ 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 5: Speed Training -->
+        <div id="view-phase5" class="view">
+            <div class="phase-header">
+                <h2>Phase 5：速度訓練</h2>
+            </div>
+            <div id="speed-setup" class="speed-setup">
+                <h3>選擇時間</h3>
+                <div class="speed-options">
+                    <button class="btn-primary speed-btn" data-duration="30">30 秒</button>
+                    <button class="btn-primary speed-btn" data-duration="60">60 秒</button>
+                    <button class="btn-primary speed-btn" data-duration="120">120 秒</button>
+                </div>
+            </div>
+            <div id="speed-game" class="practice-area" style="display:none">
+                <div class="speed-header">
+                    <span class="speed-timer" id="speed-timer">60</span>
+                    <span class="speed-wpm" id="speed-wpm">0 字/分</span>
+                    <span class="speed-accuracy" id="speed-accuracy">100%</span>
+                </div>
+                <div class="card">
+                    <div class="card-zhuyin" id="speed-zhuyin">ㄅ</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="speed-input" class="pinyin-input" placeholder="拼音..." autocomplete="off">
+                </div>
+            </div>
+            <div id="speed-result" class="session-summary" style="display:none">
+                <h3>速度測試結果</h3>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <div class="summary-number" id="speed-result-wpm">0</div>
+                        <div class="summary-label">字/分</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-number" id="speed-result-accuracy">0%</div>
+                        <div class="summary-label">正確率</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-number" id="speed-result-total">0</div>
+                        <div class="summary-label">總答題</div>
+                    </div>
+                </div>
+                <button class="btn-primary" id="speed-restart">再來一次</button>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="view-dashboard" class="view">
+            <div class="phase-header">
+                <h2>學習統計</h2>
+            </div>
+            <div class="dashboard">
+                <div class="dash-card">
+                    <h3>整體進度</h3>
+                    <div id="dash-overall" class="dash-content"></div>
+                </div>
+                <div class="dash-card">
+                    <h3>聲母熟練度</h3>
+                    <div id="dash-initials" class="mastery-grid"></div>
+                </div>
+                <div class="dash-card">
+                    <h3>韻母熟練度</h3>
+                    <div id="dash-finals" class="mastery-grid"></div>
+                </div>
+                <div class="dash-card">
+                    <h3>弱點項目 (最常錯)</h3>
+                    <div id="dash-weakness" class="dash-content"></div>
+                </div>
+                <div class="dash-card">
+                    <h3>最近練習紀錄</h3>
+                    <div id="dash-sessions" class="dash-content"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+</html>

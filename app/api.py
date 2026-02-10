@@ -6,6 +6,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from pypinyin import pinyin, Style
+
 from app.db import Database
 from app.srs import SRSEngine, SRSItem
 
@@ -91,6 +93,14 @@ def get_progress():
     items = db.load_all_progress()
     sessions = db.get_sessions()
     return {"items": items, "sessions": sessions}
+
+
+@app.get("/api/character/{char}")
+def get_character_pinyin(char: str):
+    result = pinyin(char, style=Style.NORMAL)
+    if result:
+        return {"character": char, "pinyin": result[0][0]}
+    return {"character": char, "pinyin": ""}
 
 
 @app.post("/api/session")

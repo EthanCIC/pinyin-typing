@@ -6,7 +6,7 @@ import time
 class Database:
     def __init__(self, path: str = "db/progress.db"):
         self.path = path
-        self.conn = sqlite3.connect(path)
+        self.conn = sqlite3.connect(path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
 
     def init(self):

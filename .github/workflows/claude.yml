@@ -36,7 +36,7 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git'
-          plugins: 'ui-ux-pro-max@nextlevelbuilder'
+          plugins: 'ui-ux-pro-max@ui-ux-pro-max-skill'
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |

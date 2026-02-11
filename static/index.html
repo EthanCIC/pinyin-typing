@@ -2,9 +2,16 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#58CC02">
+    <meta name="description" content="互動式拼音學習應用程式，採用 Duolingo 風格設計">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="拼音學習">
     <title>拼音學習系統</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
     <nav id="nav">
@@ -258,6 +265,49 @@
         </div>
     </main>
 
+    <!-- Gamification Elements -->
+    <div class="streak-counter" id="streak-counter">
+        <span class="icon">🔥</span>
+        <span class="streak-text"><span id="streak-days">0</span> 天</span>
+    </div>
+
+    <div class="xp-bar" id="xp-bar">
+        <span class="icon">⭐</span>
+        <span class="xp-text"><span id="xp-total">0</span> XP</span>
+    </div>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <div class="bottom-nav-tabs">
+            <button class="bottom-nav-tab active" data-view="phase1">
+                <span class="icon">📚</span>
+                <span>學習</span>
+            </button>
+            <button class="bottom-nav-tab" data-view="phase3">
+                <span class="icon">✏️</span>
+                <span>練習</span>
+            </button>
+            <button class="bottom-nav-tab" data-view="phase5">
+                <span class="icon">⚡</span>
+                <span>速度</span>
+            </button>
+            <button class="bottom-nav-tab" data-view="dashboard">
+                <span class="icon">📊</span>
+                <span>統計</span>
+            </button>
+        </div>
+    </nav>
+
     <script src="/app.js"></script>
+    <script>
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registered:', reg.scope))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>

@@ -46,6 +46,7 @@ const App = {
 async function init() {
     App.mappings = await API.get('/api/mappings');
     App.progress = await API.get('/api/progress');
+    initGamification();
     setupNav();
     setupPhase1();
     setupPhase2();
@@ -58,19 +59,77 @@ async function init() {
 // Navigation
 // ============================================================
 function setupNav() {
+    // Top navigation
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const view = tab.dataset.view;
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            App.currentView = view;
-            if (view === 'dashboard') loadDashboard();
-            if (view === 'phase3') startPhase3();
-            if (view === 'phase4') startPhase4();
+            switchView(view);
         });
     });
+
+    // Bottom navigation (mobile)
+    document.querySelectorAll('.bottom-nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.bottom-nav-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const view = tab.dataset.view;
+            switchView(view);
+        });
+    });
+}
+
+function switchView(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    App.currentView = view;
+    if (view === 'dashboard') loadDashboard();
+    if (view === 'phase3') startPhase3();
+    if (view === 'phase4') startPhase4();
+}
+
+// ============================================================
+// Gamification: XP and Streak
+// ============================================================
+function initGamification() {
+    // Load from localStorage
+    const xp = localStorage.getItem('pinyin_xp') || 0;
+    const streak = localStorage.getItem('pinyin_streak') || 0;
+    const lastVisit = localStorage.getItem('pinyin_last_visit');
+
+    // Update streak
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+    let currentStreak = parseInt(streak);
+    if (lastVisit === yesterday) {
+        currentStreak += 1;
+    } else if (lastVisit !== today) {
+        currentStreak = 1;
+    }
+
+    // Save and display
+    localStorage.setItem('pinyin_xp', xp);
+    localStorage.setItem('pinyin_streak', currentStreak);
+    localStorage.setItem('pinyin_last_visit', today);
+
+    document.getElementById('xp-total').textContent = xp;
+    document.getElementById('streak-days').textContent = currentStreak;
+}
+
+function addXP(amount) {
+    const currentXP = parseInt(localStorage.getItem('pinyin_xp') || 0);
+    const newXP = currentXP + amount;
+    localStorage.setItem('pinyin_xp', newXP);
+    document.getElementById('xp-total').textContent = newXP;
+
+    // Add celebration animation
+    const xpBar = document.getElementById('xp-bar');
+    xpBar.style.animation = 'celebrate 0.6s ease';
+    setTimeout(() => {
+        xpBar.style.animation = '';
+    }, 600);
 }
 
 // ============================================================
@@ -229,6 +288,7 @@ function handleRecognitionChoice(chosen, correctItem) {
 
     if (isCorrect) {
         p.correct++;
+        addXP(5); // Award XP for correct answer
         document.getElementById('card').classList.add('correct');
         document.getElementById('recognition-feedback').textContent = '正確！';
         document.getElementById('recognition-feedback').className = 'feedback correct';
@@ -255,6 +315,7 @@ function handlePhase1Input() {
 
     if (isCorrect) {
         p.correct++;
+        addXP(5); // Award XP for correct answer
         inp.className = 'pinyin-input correct';
         document.getElementById('card').classList.add('correct');
         document.getElementById('feedback').textContent = '正確！';
@@ -501,6 +562,7 @@ function handleRuleAnswer(chosen, item) {
 
     if (isCorrect) {
         p.correct++;
+        addXP(5); // Award XP for correct answer
         document.getElementById('rule-feedback').textContent = '正確！' + item.explain;
         document.getElementById('rule-feedback').className = 'feedback correct';
     } else {
@@ -593,6 +655,7 @@ function handlePhase3Input() {
 
     if (isCorrect) {
         p.correct++;
+        addXP(5); // Award XP for correct answer
         document.getElementById('char-feedback').textContent = '正確！';
         document.getElementById('char-feedback').className = 'feedback correct';
     } else {
@@ -716,6 +779,7 @@ function handlePhase4Input() {
 
     if (isCorrect) {
         p.correct++;
+        addXP(5); // Award XP for correct answer
         document.getElementById('word-feedback').textContent = '正確！';
         document.getElementById('word-feedback').className = 'feedback correct';
     } else {
@@ -806,6 +870,7 @@ function handleSpeedInput() {
 
     if (answer === item.pinyin.toLowerCase()) {
         p.correct++;
+        addXP(5); // Award XP for correct answer in speed mode
     }
 
     p.current++;

@@ -19,6 +19,10 @@ Deployed to Zeabur with staging/production workflow.
 - Dark theme UI
 - Keep frontend vanilla (no npm/webpack)
 
+## Communication
+- Always respond in Traditional Chinese (繁體中文)
+- Commit messages in English
+
 ## Deployment Workflow
 
 ### Branch Strategy
